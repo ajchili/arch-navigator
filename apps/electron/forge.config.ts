@@ -13,13 +13,15 @@ const config: ForgeConfig = {
     appBundleId: "com.github.awslabs.arch-navigator",
     icon: "./resources/arch-navigator",
     extraResource: [path.resolve(__dirname, "../web/dist")],
+    asar: true,
   },
+  buildIdentifier: "arch-navigator",
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      name: "arch-navigator",
+    }),
     new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({}),
   ],
   plugins: [
     new VitePlugin({
