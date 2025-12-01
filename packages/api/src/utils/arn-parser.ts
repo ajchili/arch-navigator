@@ -1,4 +1,4 @@
-import type { IBarn } from "./types";
+import type { Barn } from "../types";
 
 /**
  * ARN Parser for AWS Resources
@@ -34,13 +34,14 @@ const SERVICE_MAPPINGS: Record<
   },
   /** IAM: roles, users, policies */
   iam: (resource) => {
-    const [resourceType, name] = resource.split("/");
+    const [resourceType, ...rest] = resource.split("/");
     const typeMap: Record<string, string> = {
       role: "AWS::IAM::Role",
       user: "AWS::IAM::User",
       policy: "AWS::IAM::Policy",
     };
-    return typeMap[resourceType]
+    const name = rest.join("/");
+    return typeMap[resourceType] && name
       ? { type: typeMap[resourceType], identifier: name }
       : null;
   },
@@ -151,7 +152,7 @@ const SERVICE_MAPPINGS: Record<
  * // { type: 'AWS::S3::Bucket', identifier: 'my-bucket', arn: 'arn:aws:s3:::my-bucket' }
  * ```
  */
-export function parseArn(arn: string): IBarn | null {
+export function parseArn(arn: string): Barn | null {
   const match = arn.match(ARN_PATTERN);
   if (!match) return null;
 
@@ -181,6 +182,6 @@ export function createBarn(
   type: string,
   identifier: string,
   arn?: string,
-): IBarn {
+): Barn {
   return { type, identifier, arn };
 }
